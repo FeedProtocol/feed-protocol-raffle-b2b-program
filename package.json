@@ -1,0 +1,21 @@
+{
+  "name": "feed-protocol-raffle-b2b-program",
+  "version": "1.0.0",
+  "description": "Feed Protocol Raffle b2b is a Solana-based program enabling transparent, efficient, and decentralized raffles. Built with Solana's high-performance blockchain, this program ensures fairness, security, and scalability for organizing and managing raffles for b2b.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node client/main.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.95.5",
+    "base-x": "^5.0.0"
+  }
+}
