@@ -80,14 +80,14 @@ impl Processor {
        Pubkey::find_program_address(&[b"raffle", &counter.number_of_raffles.to_le_bytes()], program_id);
 
         let rent: Rent = Rent::default();
-        let rent_amount: u64 = rent.minimum_balance(152);
+        let rent_amount: u64 = rent.minimum_balance(153);
 
         invoke_signed(
             &system_instruction::create_account(
                 initializer.key,
                 &raffle_account_address,
                 rent_amount,
-                152,
+                153,
                 program_id,
             ),
             &[initializer.clone(), raffle_account.clone()],
@@ -147,6 +147,7 @@ impl Processor {
 
 
         let raffle: Raffle = Raffle{
+            is_published:0,
             number_of_participants: init_raffle.number_of_participants,
             initializer:initializer.key.to_bytes(),
             winner_no,

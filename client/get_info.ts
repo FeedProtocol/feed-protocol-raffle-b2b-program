@@ -16,7 +16,7 @@ export const get_all_raffles = async() => {
         {
           filters: [
             {
-              dataSize: 152,
+              dataSize: 153,
             },
           ],
         }
@@ -41,7 +41,7 @@ export const get_raffle_by_raffle_no = async(raffle_no:bigint) => {
         {
           filters: [
             {
-              dataSize: 152,
+              dataSize: 153,
             },
             {
               memcmp: {
@@ -65,7 +65,7 @@ export const get_all_raffles_organized_by_this_address = async(initializer:Publi
         {
           filters: [
             {
-              dataSize: 152,
+              dataSize: 153,
             },
             {
               memcmp: {

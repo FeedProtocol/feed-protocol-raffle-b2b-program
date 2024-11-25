@@ -1,7 +1,7 @@
 use borsh::{BorshDeserialize, BorshSerialize};
 
 
-#[derive(BorshSerialize, BorshDeserialize, Debug, Clone, PartialEq)]//152
+#[derive(BorshSerialize, BorshDeserialize, Debug, Clone, PartialEq)]//153
 pub struct Raffle{
     pub participants_hash:[u8;32],
     pub initializer:[u8;32],
@@ -9,7 +9,8 @@ pub struct Raffle{
     pub number_of_participants:u64,
     pub winner_no:u64,
     pub winner_wallet:[u8;32],
-    pub raffle_name:[u8;32]
+    pub raffle_name:[u8;32],
+    pub is_published:u8,
 }
 
 

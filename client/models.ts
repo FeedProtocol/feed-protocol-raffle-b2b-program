@@ -9,6 +9,7 @@
     winner_no:bigint = BigInt(0);
     winner_wallet:number[] = Array.from({length: 32}, () => 1);
     raffle_name:number[] = Array.from({length: 32}, () => 1);
+    is_published:number = 0;
 
     constructor(fields: {
 
@@ -19,6 +20,7 @@
         winner_no:bigint;
         winner_wallet:number[];
         raffle_name:number[];
+        is_published:number;
     
   
      } | undefined = undefined)
@@ -30,6 +32,7 @@
         this.winner_no = fields.winner_no;
         this.winner_wallet = fields.winner_wallet;
         this.raffle_name = fields.raffle_name;
+        this.is_published = fields.is_published;
 
       }
     }
@@ -48,6 +51,7 @@
           ["winner_no","u64"],
           ["winner_wallet",["u8",32]],
           ["raffle_name",["u8",32]],
+          ["is_published","u8"],
     ],
   },
   ],
