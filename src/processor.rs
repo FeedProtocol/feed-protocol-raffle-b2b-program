@@ -184,6 +184,7 @@ impl Processor {
 
 
         raffle.winner_wallet = winner.key.to_bytes();
+        raffle.is_published = 1;
 
 
         raffle.serialize(&mut &mut raffle_account.data.borrow_mut()[..])?;
