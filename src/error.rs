@@ -34,7 +34,7 @@ pub enum RaffleProgramError {
   #[error("invalid fee")]//9
   InvalidFee,
 
-  #[error("only read account")]//9
+  #[error("only read account")]//10
   Writable
 
 }

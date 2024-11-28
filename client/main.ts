@@ -12,7 +12,7 @@ import {
   import { deserialize, serialize } from "borsh";
   import {  Counter, CounterSchema, Fee, FeeSchema, InitPda, InitPdaSchema, Raffle, RaffleName, RaffleSchema } from "./models";
   import {connection} from './connection';
-  import { raffle_program, entropy_account, rng_fee_account, rng_program, } from "./accounts"
+  import { raffle_program, entropy_account, rng_fee_account, rng_program, ugur, } from "./accounts"
   import { deserialize_counter_account_data, deserialize_raffle_account_data, numberToLEBytes8, stringToNumberArray32Bytes } from "./utils";
   import { get_all_raffles, get_raffle_by_raffle_no } from "./get_info";
 
@@ -95,9 +95,8 @@ import {
        keys: [
          { isSigner: true, isWritable: true, pubkey: authority.publicKey },
          { isSigner: false, isWritable: true, pubkey: raffle_account },
-         { isSigner: false, isWritable: true, pubkey: winner },
-         { isSigner: false, isWritable: true, pubkey: config_account },
- 
+         { isSigner: false, isWritable: false, pubkey: winner },
+         { isSigner: false, isWritable: false, pubkey: config_account },
        ],
        data: Buffer.from([1])
      });
@@ -195,7 +194,7 @@ import {
       programId: raffle_program,
       keys: [
         { isSigner: true, isWritable: true, pubkey: authority.publicKey },
-        { isSigner: false, isWritable: false, pubkey: authority.publicKey },//1
+        { isSigner: false, isWritable: false, pubkey: ugur },//1
         { isSigner: false, isWritable: false, pubkey: authority.publicKey },//2
         { isSigner: false, isWritable: false, pubkey: authority.publicKey },//3
         { isSigner: false, isWritable: false, pubkey: authority.publicKey },//4
@@ -394,8 +393,3 @@ import {
   
   }
 
-  const participant_hash = Array.from({length: 32}, () => 1)
-
-  //init_raffle("test",BigInt(15),participant_hash,payer,);
-
-  //publish_winner(BigInt(1),payer)
