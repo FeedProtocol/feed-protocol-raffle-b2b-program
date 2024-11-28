@@ -78,22 +78,17 @@ import {
        console.log(sig)
   }
 
-  const publish_winner = async (raffle_no:bigint,authority:Keypair) => {
+  const publish_winner = async (raffle_no:bigint,authority:Keypair,winner:PublicKey) => {
   
   
    
     const le_bytes = numberToLEBytes8(raffle_no)
  
     const raffle_account = PublicKey.findProgramAddressSync([Buffer.from("raffle"),le_bytes],raffle_program)[0];
- 
- 
-    const raffle_account_info = await connection.getAccountInfo(raffle_account);
- 
-    const raffle = deserialize(RaffleSchema,Raffle,raffle_account_info?.data!);
- 
 
-    const winner = new PublicKey(raffle.winner_wallet);
  
+    const config_account = PublicKey.findProgramAddressSync([Buffer.from("config")],raffle_program)[0];
+
 
      const ix = new TransactionInstruction({
        programId: raffle_program,
@@ -101,6 +96,7 @@ import {
          { isSigner: true, isWritable: true, pubkey: authority.publicKey },
          { isSigner: false, isWritable: true, pubkey: raffle_account },
          { isSigner: false, isWritable: true, pubkey: winner },
+         { isSigner: false, isWritable: true, pubkey: config_account },
  
        ],
        data: Buffer.from([1])

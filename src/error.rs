@@ -32,7 +32,10 @@ pub enum RaffleProgramError {
   InvalidInitializer,
 
   #[error("invalid fee")]//9
-  InvalidFee
+  InvalidFee,
+
+  #[error("only read account")]//9
+  Writable
 
 }
 

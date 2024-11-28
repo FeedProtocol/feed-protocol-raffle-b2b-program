@@ -4,7 +4,7 @@ use solana_program::{
     account_info::{next_account_info, AccountInfo}, entrypoint::ProgramResult, instruction::{AccountMeta, Instruction}, msg, program::{get_return_data, invoke, invoke_signed}, pubkey::Pubkey, rent::Rent, system_instruction
 };
 use crate::error::RaffleProgramError::{InvalidCounter, ArithmeticError, InvalidRaffle,InvalidFee,
-    InvalidAuth, InitializerNotSigner, InvalidConfig, NotSignerAuth, InvalidInitializer };
+    InvalidAuth, InitializerNotSigner, InvalidConfig, NotSignerAuth, Writable };
 
 pub struct Processor;
 impl Processor {
@@ -40,7 +40,6 @@ impl Processor {
             RaffleProgramInstruction::CollectFee => {
                 Self::collect_fee(accounts, program_id)
             },
-
         }
     }
 
@@ -169,18 +168,30 @@ impl Processor {
 
         let accounts_iter: &mut std::slice::Iter<'_, AccountInfo<'_>> = &mut accounts.iter();
 
-        let initializer: &AccountInfo<'_> = next_account_info(accounts_iter)?;
+        
+        let authority: &AccountInfo<'_> = next_account_info(accounts_iter)?;
         let raffle_account: &AccountInfo<'_> = next_account_info(accounts_iter)?;
         let winner: &AccountInfo<'_> = next_account_info(accounts_iter)?;
+        let config_account: &AccountInfo<'_> = next_account_info(accounts_iter)?;
 
+        if config_account.is_writable{return Err(Writable.into());}
+        if config_account.owner != program_id {
+            return Err(InvalidConfig.into());
+        }
+    
+
+        let config: Config = Config::try_from_slice(&config_account.data.borrow())?;
+
+        Self::check_authority(authority.key, config)?;
+
+        if !authority.is_signer {
+            return Err(NotSignerAuth.into());
+        }
 
         let mut raffle: Raffle = Raffle::try_from_slice(&raffle_account.data.borrow())?;
 
         if raffle_account.owner != program_id {return Err(InvalidRaffle.into());}
-        if raffle.initializer != initializer.key.to_bytes(){return Err(InvalidInitializer.into());}
-        if !initializer.is_signer{return Err(InitializerNotSigner.into())}
 
-        if raffle_account.owner != program_id {return Err(InvalidRaffle.into());}
 
 
         raffle.winner_wallet = winner.key.to_bytes();
@@ -188,7 +199,7 @@ impl Processor {
 
 
         raffle.serialize(&mut &mut raffle_account.data.borrow_mut()[..])?;
-        
+
         Ok(())
     }
 
@@ -440,8 +451,6 @@ impl Processor {
     
     Ok(())
    }
-
-
    
     fn check_authority(
         authority: &Pubkey, config: Config
