@@ -1,4 +1,4 @@
-use crate::{instruction::RaffleProgramInstruction, state::{ Config, Fee, InitPda, Raffle, RaffleCounter, RandomNumber}};
+use crate::{instruction::RaffleProgramInstruction, state::{ Config, Fee, InitPda, Raffle, RaffleCounter, RandomNumber, Winner}};
 use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::{
     account_info::{next_account_info, AccountInfo}, entrypoint::ProgramResult, instruction::{AccountMeta, Instruction}, msg, program::{get_return_data, invoke, invoke_signed}, pubkey::Pubkey, rent::Rent, system_instruction
@@ -19,8 +19,8 @@ impl Processor {
             RaffleProgramInstruction::InitRaffle {init_raffle}=> {
                 Self::init_raffle(accounts, program_id, init_raffle)
             },
-            RaffleProgramInstruction::PublishWinner => {
-                Self::publish_winner(accounts, program_id)
+            RaffleProgramInstruction::PublishWinner {winner}=> {
+                Self::publish_winner(accounts, program_id,winner)
             },
             RaffleProgramInstruction::InitCounter => {
                 Self::init_raffle_counter(accounts, program_id)
@@ -41,6 +41,7 @@ impl Processor {
                 Self::collect_fee(accounts, program_id)
             },
         }
+    
     }
 
     fn init_raffle(
@@ -150,7 +151,7 @@ impl Processor {
             number_of_participants: init_raffle.number_of_participants,
             initializer:initializer.key.to_bytes(),
             winner_no,
-            winner_wallet: [0;32],
+            winner: [0;50],
             raffle_name: init_raffle.raffle_name,
             raffle_no: counter.number_of_raffles,
             participants_hash: init_raffle.participants_hash,
@@ -163,7 +164,7 @@ impl Processor {
     }
 
     fn publish_winner(
-        accounts: &[AccountInfo],program_id: &Pubkey
+        accounts: &[AccountInfo],program_id: &Pubkey, winner:Winner
     ) -> ProgramResult{
 
         let accounts_iter: &mut std::slice::Iter<'_, AccountInfo<'_>> = &mut accounts.iter();
@@ -171,7 +172,6 @@ impl Processor {
         
         let authority: &AccountInfo<'_> = next_account_info(accounts_iter)?;
         let raffle_account: &AccountInfo<'_> = next_account_info(accounts_iter)?;
-        let winner: &AccountInfo<'_> = next_account_info(accounts_iter)?;
         let config_account: &AccountInfo<'_> = next_account_info(accounts_iter)?;
 
         if config_account.is_writable{return Err(Writable.into());}
@@ -192,9 +192,12 @@ impl Processor {
 
         if raffle_account.owner != program_id {return Err(InvalidRaffle.into());}
 
+        let raffle_name: String = String::from_utf8(raffle.raffle_name.to_vec()).unwrap();
+        let winner_name: String = String::from_utf8(winner.winner.to_vec()).unwrap();
 
+        msg!("THE WINNER OF THE {} IS  {}",raffle_name,winner_name);
 
-        raffle.winner_wallet = winner.key.to_bytes();
+        raffle.winner = winner.winner;
         raffle.is_published = 1;
 
 

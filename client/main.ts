@@ -78,10 +78,9 @@ import {
        console.log(sig)
   }
 
-  const publish_winner = async (raffle_no:bigint,authority:Keypair,winner:PublicKey) => {
-  
-  
-   
+  const publish_winner = async (raffle_no:bigint,authority:Keypair,winner:PublicKey,winner_as_bytes:number[]) => {
+
+
     const le_bytes = numberToLEBytes8(raffle_no)
  
     const raffle_account = PublicKey.findProgramAddressSync([Buffer.from("raffle"),le_bytes],raffle_program)[0];
@@ -90,15 +89,16 @@ import {
     const config_account = PublicKey.findProgramAddressSync([Buffer.from("config")],raffle_program)[0];
 
 
+
+
      const ix = new TransactionInstruction({
        programId: raffle_program,
        keys: [
          { isSigner: true, isWritable: true, pubkey: authority.publicKey },
          { isSigner: false, isWritable: true, pubkey: raffle_account },
-         { isSigner: false, isWritable: false, pubkey: winner },
          { isSigner: false, isWritable: false, pubkey: config_account },
        ],
-       data: Buffer.from([1])
+       data: Buffer.from([1,...winner_as_bytes])
      });
    
      const message = new TransactionMessage({
@@ -110,8 +110,9 @@ import {
      const tx = new VersionedTransaction(message);
      tx.sign([authority]);
  
-     connection.sendTransaction(tx);
+    const s  = await connection.sendTransaction(tx);
 
+    console.log(s)
      
   }
 
@@ -141,7 +142,9 @@ import {
      const tx = new VersionedTransaction(message);
      tx.sign([authority]);
  
-     connection.sendTransaction(tx);
+     const sig = await connection.sendTransaction(tx);
+
+     console.log(sig)
 
      console.log(counter_account.toBase58())
   }
@@ -282,12 +285,14 @@ import {
     const tx = new VersionedTransaction(message);
     tx.sign([authority]);
   
-    await connection.sendTransaction(tx);
+    const sig = await connection.sendTransaction(tx);
   
+    console.log(sig)
   }
 
    const init_config = async (authority:Keypair) => {
 
+    console.log(authority.publicKey.toBase58())
 
     const config_account = PublicKey.findProgramAddressSync([Buffer.from("config")],raffle_program)
     console.log(config_account.toString())
@@ -314,8 +319,9 @@ import {
     const tx = new VersionedTransaction(message);
     tx.sign([authority]);
   
-    await connection.sendTransaction(tx);
+    const sig = await connection.sendTransaction(tx);
 
+    console.log(sig)
   
   }
 
@@ -360,8 +366,9 @@ import {
     const tx = new VersionedTransaction(message);
     tx.sign([authority]);
 
-    await connection.sendTransaction(tx);
+    const sig = await connection.sendTransaction(tx);
 
+    console.log(sig)
   }
 
    const close_account = async (authority:Keypair) => {
@@ -392,4 +399,3 @@ import {
     const sig = await connection.sendTransaction(tx);
   
   }
-

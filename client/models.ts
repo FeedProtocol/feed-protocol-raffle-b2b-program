@@ -7,7 +7,7 @@
     raffle_no:bigint = BigInt(0);
     number_of_participants:bigint = BigInt(0);
     winner_no:bigint = BigInt(0);
-    winner_wallet:number[] = Array.from({length: 32}, () => 1);
+    winner:number[] = Array.from({length: 50}, () => 1);
     raffle_name:number[] = Array.from({length: 32}, () => 1);
     is_published:number = 0;
 
@@ -18,7 +18,7 @@
         raffle_no:bigint;
         number_of_participants:bigint;
         winner_no:bigint;
-        winner_wallet:number[];
+        winner:number[];
         raffle_name:number[];
         is_published:number;
     
@@ -30,7 +30,7 @@
         this.raffle_no = fields.raffle_no;
         this.number_of_participants = fields.number_of_participants;
         this.winner_no = fields.winner_no;
-        this.winner_wallet = fields.winner_wallet;
+        this.winner = fields.winner;
         this.raffle_name = fields.raffle_name;
         this.is_published = fields.is_published;
 
@@ -49,7 +49,7 @@
           ["raffle_no","u64"],
           ["number_of_participants","u64"],
           ["winner_no","u64"],
-          ["winner_wallet",["u8",32]],
+          ["winner",["u8",50]],
           ["raffle_name",["u8",32]],
           ["is_published","u8"],
     ],

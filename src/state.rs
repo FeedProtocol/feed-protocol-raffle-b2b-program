@@ -8,7 +8,7 @@ pub struct Raffle{
     pub raffle_no:u64,
     pub number_of_participants:u64,
     pub winner_no:u64,
-    pub winner_wallet:[u8;32],
+    pub winner:[u8;50],
     pub raffle_name:[u8;32],
     pub is_published:u8,
 }
@@ -46,4 +46,9 @@ pub struct InitPda{
 #[derive(BorshSerialize, BorshDeserialize, Debug, Clone, PartialEq)]
 pub struct Fee{
     pub fee:u64
+}
+
+#[derive(BorshSerialize, BorshDeserialize, Debug, Clone, PartialEq)]
+pub struct Winner{
+    pub winner:[u8;50]
 }
